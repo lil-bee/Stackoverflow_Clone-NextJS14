@@ -3,6 +3,7 @@ import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import type { Metadata } from "next";
 import React from "react";
+import { ThemeProvider } from "@/context/ThemeProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -40,8 +41,10 @@ export default function RootLayout({
     >
       <html lang="en">
         <body className={`${inter.variable}${spaceGrotesk.variable}`}>
-          <h1 className="h1-bold">Bismillah Frontend Dev + benerin otak</h1>
-          {children}
+          <ThemeProvider>
+            <h1 className="h1-bold">Bismillah Frontend Dev + benerin otak</h1>
+            {children}
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>
