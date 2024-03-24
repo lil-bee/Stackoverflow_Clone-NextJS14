@@ -3,6 +3,7 @@ import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import type { Metadata } from "next";
 import React from "react";
+import { ThemeProvider } from "@/context/ThemeProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -16,7 +17,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "DevFlow",
+  title: "DevFlow | lilbee",
   description:
     "A community-driven platform for asking and answering programming questions. Get help, share knowledge, and collaborate with developers from around the world. Explore topics in web development, mobile app development, algorithms, data structures, and more.",
   icons: {
@@ -39,9 +40,8 @@ export default function RootLayout({
       }}
     >
       <html lang="en">
-        <body className={`${inter.variable}${spaceGrotesk.variable}`}>
-          <h1 className="h1-bold">Bismillah Frontend Dev + benerin otak</h1>
-          {children}
+        <body className={`${inter.variable} ${spaceGrotesk.variable}`}>
+          <ThemeProvider>{children}</ThemeProvider>
         </body>
       </html>
     </ClerkProvider>
