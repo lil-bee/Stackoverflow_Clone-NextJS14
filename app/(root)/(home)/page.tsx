@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import Filter from "@/components/shared/Filter";
 import Link from "next/link";
 import { HomePageFilters } from "@/constants/filter";
+import QuestionCard from "@/components/shared/QuestionCard";
 
 export default function Home() {
   return (
@@ -32,6 +33,7 @@ export default function Home() {
         filter
       </div>
       <HomeFilters />
+      <QuestionCard />
     </>
   );
 }

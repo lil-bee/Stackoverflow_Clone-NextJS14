@@ -23,7 +23,7 @@ const Filter = ({ filters, otherClasses, containerClasses }: Props) => {
     <div className={`relative ${containerClasses}`}>
       <Select>
         <SelectTrigger
-          className={`${otherClasses} body-regular light-border background-light800_dark300 text-dark500_light700 border px-5 py-2.5`}
+          className={`${otherClasses} body-regular light-border background-light800_dark300 text-dark500_light700 border px-5 py-2.5 focus-visible:ring-0`}
         >
           <div className="line-clamp-1 flex-1 text-left">
             <SelectValue placeholder="Select a Filter" />
