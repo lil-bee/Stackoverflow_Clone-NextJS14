@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import Filter from "@/components/shared/Filter";
 import Link from "next/link";
 import { HomePageFilters } from "@/constants/filter";
+import NoResult from "@/components/shared/NoResult";
 
 export default function Home() {
   return (
@@ -29,9 +30,18 @@ export default function Home() {
           otherClasses="min-h-[56px] sm:min-w-[170px]"
           filters={HomePageFilters}
         />
-        filter
       </div>
       <HomeFilters />
+      <div className="mt-10 flex w-full flex-col gap-6 ">
+        <NoResult
+          title="No Results Found"
+          description="Be the first to break the silence! 🚀 Ask a Question and kickstart the
+          discussion. our query could be the next big thing others learn from. Get
+          involved! 💡"
+          link="/ask-question"
+          linkTitle="Ask a Question"
+        />
+      </div>
     </>
   );
 }
