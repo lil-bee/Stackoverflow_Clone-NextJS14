@@ -13,7 +13,11 @@ const page = async () => {
   console.log(mongoUser);
   return (
     <div>
-      <Question mongoUserId={JSON.stringify(mongoUser._id)} />
+      <h1 className="h1-bold text-dark100_light900">Ask a question</h1>
+
+      <div className="mt-9">
+        <Question mongoUserId={JSON.stringify(mongoUser._id)} />
+      </div>
     </div>
   );
 };
