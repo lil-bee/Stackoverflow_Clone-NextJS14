@@ -2,10 +2,9 @@ import React from "react";
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import Filter from "@/components/shared/Filter";
 import { UserFilters } from "@/constants/filter";
-import UserCard from "@/components/shared/card/UserCard";
 import Link from "next/link";
 import { getAllTags } from "@/lib/actions/tag.action";
-import { Badge } from "@/components/ui/badge";
+import NoResult from "@/components/shared/NoResult";
 
 const page = async () => {
   const result = await getAllTags({});
@@ -13,12 +12,12 @@ const page = async () => {
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
-        <h1 className="h2-bold text-dark100_light900">All Users</h1>
+        <h1 className="h2-bold text-dark100_light900">All Tags</h1>
       </div>
       <div className="mt-11 flex justify-between gap-5 max-sm:flex-col sm:items-center">
         <LocalSearchBar
           route="/"
-          placeholder="Search Questions"
+          placeholder="Search Tags"
           iconPosition="left"
           imgSrc="/assets/icons/search.svg"
           otherClasses="flex-1"
@@ -54,7 +53,12 @@ const page = async () => {
             </Link>
           ))
         ) : (
-          <Badge>No tags yet</Badge>
+          <NoResult
+            title="No Tags Found"
+            description="It looks like there are no tags found."
+            link="/ask-question"
+            linkTitle="Ask a question"
+          />
         )}
       </section>
     </>
