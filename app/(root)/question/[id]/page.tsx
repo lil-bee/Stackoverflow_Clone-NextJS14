@@ -1,6 +1,7 @@
 import Metric from "@/components/shared/Metric";
 import RenderTag from "@/components/shared/RenderTag";
 import ParseHTML from "@/components/shared/card/ParseHTML";
+import Answer from "@/components/shared/form/Answer";
 import { getQuestionById } from "@/lib/actions/question.action";
 import { formatAndDivideNumber, getTimestamp } from "@/lib/utils";
 import Image from "next/image";
@@ -71,6 +72,7 @@ const page = async ({ params }: any) => {
           />
         ))}
       </div>
+      <Answer />
     </>
   );
 };
