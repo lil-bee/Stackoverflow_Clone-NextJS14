@@ -17,9 +17,7 @@ const page = async ({ params }: any) => {
   if (clerkId) {
     mongoUser = await getUserById({ userId: clerkId });
   }
-  console.log("mongouser : ", JSON.stringify(mongoUser._id));
   const result = await getQuestionById({ questionId: params.id });
-  console.log("result : ", result._id);
 
   return (
     <>
