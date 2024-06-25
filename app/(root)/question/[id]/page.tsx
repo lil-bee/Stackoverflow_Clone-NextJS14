@@ -1,14 +1,25 @@
+import AllAnswers from "@/components/shared/AllAnswers";
 import Metric from "@/components/shared/Metric";
 import RenderTag from "@/components/shared/RenderTag";
 import ParseHTML from "@/components/shared/card/ParseHTML";
+import Answer from "@/components/shared/form/Answer";
 import { getQuestionById } from "@/lib/actions/question.action";
+import { getUserById } from "@/lib/actions/user.action";
 import { formatAndDivideNumber, getTimestamp } from "@/lib/utils";
+import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
 const page = async ({ params }: any) => {
+  const { userId: clerkId } = auth();
+  let mongoUser;
+  if (clerkId) {
+    mongoUser = await getUserById({ userId: clerkId });
+  }
+  console.log("mongouser : ", JSON.stringify(mongoUser._id));
   const result = await getQuestionById({ questionId: params.id });
+  console.log("result : ", result._id);
 
   return (
     <>
@@ -71,6 +82,16 @@ const page = async ({ params }: any) => {
           />
         ))}
       </div>
+      <AllAnswers
+        totalAnswers={result.answers.length}
+        userId={JSON.stringify(mongoUser._id)}
+        questionId={result._id}
+      />
+      <Answer
+        question={result.content}
+        questionId={JSON.stringify(result._id)}
+        authorId={JSON.stringify(mongoUser._id)}
+      />
     </>
   );
 };
