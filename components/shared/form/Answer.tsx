@@ -12,14 +12,20 @@ import {
 } from "@/components/ui/form";
 import { AnswerSchema } from "@/lib/validation";
 import Image from "next/image";
-import { createQuestion } from "@/lib/actions/question.action";
 import { usePathname } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useTheme } from "@/context/ThemeProvider";
+import { createAnswer } from "@/lib/actions/answer.action";
 
-const Answer = () => {
+interface Props {
+  question: string;
+  questionId: string;
+  authorId: string;
+}
+
+const Answer = ({ question, questionId, authorId }: Props) => {
   const editorRef = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { mode } = useTheme();
@@ -39,15 +45,19 @@ const Answer = () => {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     try {
-      //   await createQuestion({
-      //     title: values.title,
-      //     content: values.explanation,
-      //     tags: values.tags,
-      //     author: JSON.parse(mongoUserId),
-      //     path: pathname,
-      //   });
+      await createAnswer({
+        content: values.answer,
+        question: JSON.parse(questionId),
+        author: JSON.parse(authorId),
+        path: pathname,
+      });
 
       form.reset();
+      if (editorRef.current) {
+        const editor = editorRef.current as any;
+
+        editor.setContent("");
+      }
     } catch (error) {
       console.log(error);
     } finally {
