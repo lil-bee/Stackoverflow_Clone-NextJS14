@@ -5,6 +5,7 @@ import {
   downvoteQuestion,
   upvoteQuestion,
 } from "@/lib/actions/question.action";
+import { toggleSaveQuestions } from "@/lib/actions/user.action";
 import { formatAndDivideNumber } from "@/lib/utils";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -32,6 +33,14 @@ const Votes = ({
   downvotes,
 }: Props) => {
   const pathname = usePathname();
+
+  const handleSave = async () => {
+    await toggleSaveQuestions({
+      userId: JSON.parse(userId),
+      questionId: JSON.parse(itemId),
+      path: pathname,
+    });
+  };
 
   const handleVote = async (action: string) => {
     if (!userId) {
@@ -126,7 +135,13 @@ const Votes = ({
           height={18}
           width={18}
           alt="favorite"
-          src="/assets/icons/star-red.svg"
+          className="cursor-pointer"
+          src={
+            hasSaved
+              ? "/assets/icons/star-filled.svg"
+              : "/assets/icons/star-red.svg"
+          }
+          onClick={handleSave}
         />
       )}
     </div>
