@@ -8,6 +8,8 @@ import { auth, SignedIn } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import QuestionTab from "@/components/shared/QuestionTab";
 
 const Page = async ({ params, searchParams }: URLProps) => {
   const { userId: clerkId } = auth();
@@ -73,6 +75,22 @@ const Page = async ({ params, searchParams }: URLProps) => {
           totalQuestions={userInfo.totalQuestions}
           totalAnswers={userInfo.totalAnswers}
         />
+        <div className="mt-10 flex gap-10">
+          <Tabs defaultValue="top-posts" className="flex-1">
+            <TabsList className="background-light800_dark400 min-h-[42px] p-1">
+              <TabsTrigger value="top-posts" className="tab">
+                Top Posts
+              </TabsTrigger>
+              <TabsTrigger value="answers" className="tab">
+                Answers
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="top-posts">
+              <QuestionTab userId={userInfo.user._id} />
+            </TabsContent>
+            <TabsContent value="answers">ANSWER</TabsContent>
+          </Tabs>
+        </div>
       </div>
     </>
   );
