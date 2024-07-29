@@ -10,6 +10,7 @@ import Link from "next/link";
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import QuestionTab from "@/components/shared/QuestionTab";
+import AnswerTab from "@/components/shared/AnswerTab";
 
 const Page = async ({ params, searchParams }: URLProps) => {
   const { userId: clerkId } = auth();
@@ -86,9 +87,17 @@ const Page = async ({ params, searchParams }: URLProps) => {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="top-posts">
-              <QuestionTab userId={userInfo.user._id} />
+              <QuestionTab
+                searchParams={searchParams}
+                userId={userInfo.user._id}
+              />
             </TabsContent>
-            <TabsContent value="answers">ANSWER</TabsContent>
+            <TabsContent value="answers" className="flex w-full flex-col gap-6">
+              <AnswerTab
+                searchParams={searchParams}
+                userId={userInfo.user._id}
+              />
+            </TabsContent>
           </Tabs>
         </div>
       </div>
