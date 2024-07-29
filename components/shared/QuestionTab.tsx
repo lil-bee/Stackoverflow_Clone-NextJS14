@@ -15,6 +15,7 @@ const QuestionTab = async ({ userId, clerkId, searchParams }: Props) => {
     <>
       {result.questions.map((question) => (
         <QuestionCard
+          clerkId={clerkId}
           key={question._id}
           _id={question._id}
           title={question.title}

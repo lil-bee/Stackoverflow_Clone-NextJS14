@@ -22,30 +22,35 @@ import { Input } from "@/components/ui/input";
 import { QuestionSchema } from "@/lib/validation";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
-import { createQuestion } from "@/lib/actions/question.action";
+import { createQuestion, editQuestion } from "@/lib/actions/question.action";
 import { useRouter, usePathname } from "next/navigation";
 import { useTheme } from "@/context/ThemeProvider";
 
-const type: any = "create";
-
 interface Props {
   mongoUserId: string;
+  questionDetail?: string;
+  type?: string;
 }
 
-export function Question({ mongoUserId }: Props) {
+export function Question({ mongoUserId, questionDetail, type }: Props) {
   const editorRef = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const { mode } = useTheme();
   const pathname = usePathname();
 
+  const parsedQuestionDetail = JSON.parse(questionDetail || "");
+  const groupedTags = parsedQuestionDetail.tags.map((tag: any) => tag.name);
+
+  console.log(parsedQuestionDetail);
+
   // 1. Define your form.
   const form = useForm<z.infer<typeof QuestionSchema>>({
     resolver: zodResolver(QuestionSchema),
     defaultValues: {
-      title: "",
-      explanation: "",
-      tags: [],
+      title: parsedQuestionDetail.title || "",
+      explanation: parsedQuestionDetail.con || "",
+      tags: groupedTags || [],
     },
   });
 
@@ -55,15 +60,26 @@ export function Question({ mongoUserId }: Props) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     try {
-      await createQuestion({
-        title: values.title,
-        content: values.explanation,
-        tags: values.tags,
-        author: JSON.parse(mongoUserId),
-        path: pathname,
-      });
+      if (type === "Edit") {
+        await editQuestion({
+          questionId: parsedQuestionDetail._id,
+          title: values.title,
+          content: values.explanation,
+          path: pathname,
+        });
 
-      router.push("/");
+        router.push(`/question/${parsedQuestionDetail._id}`);
+      } else {
+        await createQuestion({
+          title: values.title,
+          content: values.explanation,
+          tags: values.tags,
+          author: JSON.parse(mongoUserId),
+          path: pathname,
+        });
+
+        router.push("/");
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -151,7 +167,7 @@ export function Question({ mongoUserId }: Props) {
                   }}
                   onBlur={field.onBlur}
                   onEditorChange={(content) => field.onChange(content)}
-                  initialValue=""
+                  initialValue={parsedQuestionDetail.content || ""}
                   init={{
                     height: 500,
                     menubar: false,
@@ -243,7 +259,7 @@ export function Question({ mongoUserId }: Props) {
           {isSubmitting ? (
             <>{type === "edit" ? "Editing..." : "Posting..."}</>
           ) : (
-            <>{type === "edit" ? "Edit Question" : "Ask a Question"}</>
+            <>{type === "Edit" ? "Edit Question" : "Ask a Question"}</>
           )}
         </Button>
       </form>
