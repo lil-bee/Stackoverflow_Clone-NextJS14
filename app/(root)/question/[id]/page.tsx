@@ -1,6 +1,7 @@
 import AllAnswers from "@/components/shared/AllAnswers";
 import Metric from "@/components/shared/Metric";
 import RenderTag from "@/components/shared/RenderTag";
+import Votes from "@/components/shared/Votes";
 import ParseHTML from "@/components/shared/card/ParseHTML";
 import Answer from "@/components/shared/form/Answer";
 import { getQuestionById } from "@/lib/actions/question.action";
@@ -22,7 +23,7 @@ const page = async ({ params }: any) => {
   return (
     <>
       <div className="flex-start w-full flex-col">
-        <div className="flex w-full flex-col-reverse justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
+        <div className="flex w-full basis-full flex-col-reverse justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
           <Link
             className="flex items-center justify-start gap-1"
             href={`/profile/${result.author.clerkId}`}
@@ -38,7 +39,18 @@ const page = async ({ params }: any) => {
               {result.author.name}
             </p>
           </Link>
-          <div className="flex justify-end">VOTING</div>
+          <div className="flex justify-end">
+            <Votes
+              userId={JSON.stringify(mongoUser._id)}
+              type="Question"
+              itemId={JSON.stringify(result._id)}
+              upvotes={result.upvotes.length}
+              hasupVoted={result.upvotes.includes(mongoUser._id)}
+              downvotes={result.downvotes.length}
+              hasdownVoted={result.downvotes.includes(mongoUser._id)}
+              hasSaved={mongoUser?.saved.includes(result._id)}
+            />
+          </div>
         </div>
         <h2 className="h2-semibold text-dark200_light900 mt-3.5 w-full text-left">
           {result.title}
@@ -82,7 +94,7 @@ const page = async ({ params }: any) => {
       </div>
       <AllAnswers
         totalAnswers={result.answers.length}
-        userId={JSON.stringify(mongoUser._id)}
+        userId={mongoUser._id}
         questionId={result._id}
       />
       <Answer
