@@ -19,6 +19,7 @@ const AnswerTab = async ({ userId, clerkId, searchParams }: Props) => {
           _id={item._id}
           question={item.question}
           author={item.author}
+          clerkId={clerkId}
           upvotes={item.upvotes}
           createdAt={item.createdAt}
         />

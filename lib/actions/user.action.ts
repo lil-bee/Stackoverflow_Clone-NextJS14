@@ -174,6 +174,7 @@ export async function getUserInfo(params: GetUserByIdParams) {
     const { userId } = params;
 
     const user = await User.findOne({ clerkId: userId });
+    console.log(user);
 
     const totalQuestions = await Question.countDocuments({ author: user._id });
     const totalAnswers = await Answer.countDocuments({ author: user._id });

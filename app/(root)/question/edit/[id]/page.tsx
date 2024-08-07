@@ -11,14 +11,19 @@ const page = async ({ params }: ParamsProps) => {
   if (!userId) return null;
   const mongoUser = await getUserById({ userId });
   const result = await getQuestionById({ questionId: params.id });
-  console.log("RESULT ", result);
-  console.log("MONGOUSE ", mongoUser);
+
   return (
-    <Question
-      type="Edit" // NOTE:  kudu uppercase?
-      mongoUserId={JSON.stringify(mongoUser._id)}
-      questionDetail={JSON.stringify(result)}
-    />
+    <div>
+      <h1 className="h1-bold text-dark100_light900">Edit question</h1>
+
+      <div className="mt-9">
+        <Question
+          type="Edit" // NOTE:  kudu uppercase?
+          mongoUserId={JSON.stringify(mongoUser._id)}
+          questionDetail={JSON.stringify(result)}
+        />
+      </div>
+    </div>
   );
 };
 

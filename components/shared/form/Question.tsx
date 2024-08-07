@@ -39,17 +39,16 @@ export function Question({ mongoUserId, questionDetail, type }: Props) {
   const { mode } = useTheme();
   const pathname = usePathname();
 
-  const parsedQuestionDetail = JSON.parse(questionDetail || "");
-  const groupedTags = parsedQuestionDetail.tags.map((tag: any) => tag.name);
-
-  console.log(parsedQuestionDetail);
+  const parsedQuestionDetail =
+    questionDetail && JSON.parse(questionDetail || "");
+  const groupedTags = parsedQuestionDetail?.tags.map((tag: any) => tag.name);
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof QuestionSchema>>({
     resolver: zodResolver(QuestionSchema),
     defaultValues: {
-      title: parsedQuestionDetail.title || "",
-      explanation: parsedQuestionDetail.con || "",
+      title: parsedQuestionDetail?.title || "",
+      explanation: parsedQuestionDetail?.content || "",
       tags: groupedTags || [],
     },
   });
@@ -167,7 +166,7 @@ export function Question({ mongoUserId, questionDetail, type }: Props) {
                   }}
                   onBlur={field.onBlur}
                   onEditorChange={(content) => field.onChange(content)}
-                  initialValue={parsedQuestionDetail.content || ""}
+                  initialValue={parsedQuestionDetail?.content || ""}
                   init={{
                     height: 500,
                     menubar: false,
@@ -220,23 +219,30 @@ export function Question({ mongoUserId, questionDetail, type }: Props) {
                     placeholder="Add Tags..."
                     className="no-focus paragraph-regular light-border-2 text-dark300_light700 background-light900_dark300 min-h-[56px] border"
                     onKeyDown={(e) => handleInputKeyDown(e, field)}
+                    disabled={type === "Edit"}
                   />
                   {field.value.length > 0 && (
                     <div className="flex-start mt-2.5 gap-2.5">
                       {field.value.map((tag: any) => (
                         <Badge
-                          onClick={() => handleTagRemove(tag, field)}
+                          onClick={() =>
+                            type !== "Edit"
+                              ? handleTagRemove(tag, field)
+                              : () => {}
+                          }
                           key={tag}
                           className="subtle-medium background-light800_dark300 text-light400_light500 flex items-center justify-center gap-2 rounded-md border-none px-4 py-2 capitalize"
                         >
                           {tag}
-                          <Image
-                            src="/assets/icons/close.svg"
-                            alt="Close icon"
-                            width={12}
-                            height={12}
-                            className="cursor-pointer object-contain invert-0 dark:invert"
-                          />
+                          {type !== "Edit" && (
+                            <Image
+                              src="/assets/icons/close.svg"
+                              alt="Close icon"
+                              width={12}
+                              height={12}
+                              className="cursor-pointer object-contain invert-0 dark:invert"
+                            />
+                          )}
                         </Badge>
                       ))}
                     </div>
