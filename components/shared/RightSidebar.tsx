@@ -1,8 +1,7 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
 import RenderTag from "./RenderTag";
+import { getHotQuestion } from "@/lib/actions/question.action";
 
 const hotQuestions = [
   { _id: "1", title: "How do I use express as a custom server in NextJS?" },
@@ -23,18 +22,20 @@ const popularTags = [
   { _id: "4", name: "vue", totalQuestions: 2 },
   { _id: "5", name: "redux", totalQuestions: 10 },
 ];
-const RightSidebar = () => {
+const RightSidebar = async () => {
+  const result = await getHotQuestion();
+  console.log("=== HOT QUESTIONS ===", result);
   return (
     <section className="background-light900_dark200 light-border custom-scrollbar light-border sticky right-0 top-0 flex h-screen flex-col justify-between overflow-y-auto border-l p-6 pt-36 shadow-light-300 dark:shadow-none max-xl:hidden lg:w-[330px]">
       <div>
         <h1 className="h3-bold text-dark200_light900">Top Question</h1>
         <div className="mt-7 flex w-full flex-col gap-[30px]">
-          {hotQuestions.map((item) => {
+          {result.hotQuestions.map((item) => {
             // TODO
 
             return (
               <Link
-                href={`questions/${item._id}`}
+                href={`/question/${item._id}`}
                 key={item.title}
                 className="text-dark300_light900
                 flex items-center justify-between gap-[10px]"
