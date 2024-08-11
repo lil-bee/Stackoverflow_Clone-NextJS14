@@ -24,6 +24,7 @@ const LocalSearchBar = ({
   const router = useRouter();
   const pathname = usePathname();
   const searchParam = useSearchParams();
+  // console.log(searchParam);
 
   const query = searchParam.get("q");
   const [search, setSearch] = useState(query || "");
