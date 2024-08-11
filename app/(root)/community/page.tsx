@@ -5,9 +5,10 @@ import { UserFilters } from "@/constants/filter";
 import { getAllUser } from "@/lib/actions/user.action";
 import UserCard from "@/components/shared/card/UserCard";
 import Link from "next/link";
+import { SearchParamsProps } from "@/types";
 
-const page = async () => {
-  const result = await getAllUser({});
+const page = async ({ searchParams }: SearchParamsProps) => {
+  const result = await getAllUser({ searchQuery: searchParams.q });
 
   return (
     <>
@@ -16,7 +17,7 @@ const page = async () => {
       </div>
       <div className="mt-11 flex justify-between gap-5 max-sm:flex-col sm:items-center">
         <LocalSearchBar
-          route="/"
+          route="/community"
           placeholder="Search Questions"
           iconPosition="left"
           imgSrc="/assets/icons/search.svg"

@@ -82,11 +82,22 @@ export async function deleteUser(params: DeleteUserParams) {
   }
 }
 
-export async function getAllUser(param: GetAllUsersParams) {
+export async function getAllUser(params: GetAllUsersParams) {
   try {
     connectToDatabase();
 
-    const users = await User.find({});
+    const { searchQuery } = params;
+
+    const query: FilterQuery<typeof User> = {};
+
+    if (searchQuery) {
+      query.$or = [
+        { name: { $regex: new RegExp(searchQuery, "i") } },
+        { username: { $regex: new RegExp(searchQuery, "i") } },
+      ];
+    }
+
+    const users = await User.find(query).sort({ createdAt: -1 });
 
     return { users };
   } catch (error) {

@@ -24,7 +24,6 @@ const LocalSearchBar = ({
   const router = useRouter();
   const pathname = usePathname();
   const searchParam = useSearchParams();
-  // console.log(searchParam);
 
   const query = searchParam.get("q");
   const [search, setSearch] = useState(query || "");
@@ -37,20 +36,22 @@ const LocalSearchBar = ({
           key: "q",
           value: search,
         });
+
         router.push(newUrl, { scroll: false });
       } else {
-        if (route === pathname) {
+        if (pathname === route) {
           const newUrl = removeKeyFromUrl({
             params: searchParam.toString(),
             keysToRemove: ["q"],
           });
+
           router.push(newUrl, { scroll: false });
         }
       }
     }, 300);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [route, router, pathname, query, search, searchParam]);
+  }, [search, route, pathname, router, searchParam, query]);
 
   return (
     <div
