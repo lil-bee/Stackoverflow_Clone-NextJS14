@@ -5,9 +5,10 @@ import { UserFilters } from "@/constants/filter";
 import Link from "next/link";
 import { getAllTags } from "@/lib/actions/tag.action";
 import NoResult from "@/components/shared/NoResult";
+import { SearchParamsProps } from "@/types";
 
-const page = async () => {
-  const result = await getAllTags({});
+const page = async ({ searchParams }: SearchParamsProps) => {
+  const result = await getAllTags({ searchQuery: searchParams.q });
 
   return (
     <>
@@ -16,7 +17,7 @@ const page = async () => {
       </div>
       <div className="mt-11 flex justify-between gap-5 max-sm:flex-col sm:items-center">
         <LocalSearchBar
-          route="/"
+          route="/tags"
           placeholder="Search Tags"
           iconPosition="left"
           imgSrc="/assets/icons/search.svg"
