@@ -4,6 +4,8 @@ import Question from "@/database/question.model";
 import { connectToDatabase } from "../mongoose";
 import {
   CreateQuestionParams,
+  DeleteQuestionParams,
+  EditQuestionParams,
   GetQuestionByIdParams,
   GetQuestionsParams,
   QuestionVoteParams,
@@ -12,6 +14,8 @@ import Tag from "@/database/tag.model";
 import User from "@/database/user.model";
 import { revalidatePath } from "next/cache";
 import { Error } from "mongoose";
+import Answer from "@/database/answer.model";
+import Interaction from "@/database/interaction.model";
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
@@ -139,6 +143,57 @@ export async function downvoteQuestion(params: QuestionVoteParams) {
     if (!question) {
       throw new Error("question not found");
     }
+
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function editQuestion(params: EditQuestionParams) {
+  try {
+    connectToDatabase();
+
+    const { questionId, title, content, path } = params;
+
+    const question = await Question.findById(questionId).populate("tags");
+
+    if (!question) throw new Error("Question not found");
+
+    question.title = title;
+    question.content = content;
+
+    await question.save();
+
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function deleteQuestion(params: DeleteQuestionParams) {
+  try {
+    connectToDatabase();
+
+    const { questionId, path } = params;
+
+    // delete 1 question,
+    await Question.deleteOne({ _id: questionId });
+    // delete byk answer di question itu,
+    await Answer.deleteMany({ question: questionId });
+    // delete byk interaction di question itu
+    await Interaction.deleteMany({ question: questionId });
+    // update array question dgn delete spesifk questionid
+    await Tag.updateMany(
+      { questions: questionId }, // cari dulu
+      { $pull: { questions: questionId } } // delete spesifik id
+    );
+    await User.updateMany(
+      { saved: questionId },
+      { $pull: { saved: questionId } }
+    );
 
     revalidatePath(path);
   } catch (error) {
