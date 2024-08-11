@@ -5,14 +5,16 @@ import NoResult from "@/components/shared/NoResult";
 import QuestionCard from "@/components/shared/card/QuestionCard";
 import { auth } from "@clerk/nextjs";
 import { getSavedQuestions } from "@/lib/actions/user.action";
+import { SearchParamsProps } from "@/types";
 
-export default async function Home() {
+export default async function Home({ searchParams }: SearchParamsProps) {
   const { userId } = auth();
 
   if (!userId) return null;
 
   const result = await getSavedQuestions({
     clerkId: userId,
+    searchQuery: searchParams.q,
   });
 
   return (
@@ -22,7 +24,7 @@ export default async function Home() {
       </div>
       <div className="mt-11 flex justify-between gap-5 max-sm:flex-col sm:items-center">
         <LocalSearchBar
-          route="/"
+          route="/collection"
           placeholder="Search Questions"
           iconPosition="left"
           imgSrc="/assets/icons/search.svg"
@@ -42,7 +44,7 @@ export default async function Home() {
               title={question.title}
               tags={question.tags}
               author={question.author}
-              upvotes={question.upvotes.length}
+              upvotes={question.upvotes}
               views={question.views}
               answers={question.answers}
               createdAt={question.createdAt}
