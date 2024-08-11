@@ -201,3 +201,18 @@ export async function deleteQuestion(params: DeleteQuestionParams) {
     throw error;
   }
 }
+
+export async function getHotQuestion() {
+  try {
+    connectToDatabase();
+
+    const hotQuestions = await Question.find({})
+      .sort({ views: -1, answers: -1 })
+      .limit(5);
+
+    return { hotQuestions };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}

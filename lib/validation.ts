@@ -14,8 +14,6 @@ export const ProfileSchema = z.object({
   name: z.string().min(5).max(50),
   username: z.string().min(5).max(50),
   bio: z.string().min(5).max(150),
-  portfolioWebsite: z
-    .union([z.string().url().nullish(), z.literal("")])
-    .transform((val) => val ?? ""), // biar ga error inputnya
+  portfolioWebsite: z.union([z.literal(""), z.string().trim().url()]), // biar ga error inputnya
   location: z.string().min(5).max(50),
 });
