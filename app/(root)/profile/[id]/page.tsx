@@ -19,7 +19,7 @@ const Page = async ({ params, searchParams }: URLProps) => {
   return (
     <>
       <div className="flex flex-col items-start justify-between">
-        <div className="flex flex-col items-start gap-4 lg:flex-row">
+        <div className="flex w-full flex-col items-start justify-between gap-4 lg:flex-row">
           <Image
             src={userInfo.user.picture}
             alt="profile picture"
@@ -36,10 +36,10 @@ const Page = async ({ params, searchParams }: URLProps) => {
             </p>
 
             <div className="mt-5 flex flex-wrap items-center justify-start gap-5">
-              {userInfo.user.portogolioWebsite && (
+              {userInfo.user.portfolioWebsite && (
                 <ProfileLink
                   imgUrl="/assets/icons/link.svg"
-                  href={userInfo.user.portogolioWebsite}
+                  href={userInfo.user.portfolioWebsite}
                   title="portofolio"
                 />
               )}
@@ -60,7 +60,7 @@ const Page = async ({ params, searchParams }: URLProps) => {
               </p>
             )}
           </div>
-          <div className="flex justify-end max-sm:mb-5 max-sm:w-full sm:mt-3">
+          <div className="ml-auto flex max-sm:mb-5 max-sm:w-full sm:mt-3">
             <SignedIn>
               {clerkId === userInfo.user.clerkId && (
                 <Link href="/profile/edit">
