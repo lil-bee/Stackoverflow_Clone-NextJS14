@@ -1,14 +1,17 @@
 import React from "react";
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import Filter from "@/components/shared/Filter";
-import { UserFilters } from "@/constants/filter";
+import { TagFilters, UserFilters } from "@/constants/filter";
 import Link from "next/link";
 import { getAllTags } from "@/lib/actions/tag.action";
 import NoResult from "@/components/shared/NoResult";
 import { SearchParamsProps } from "@/types";
 
 const page = async ({ searchParams }: SearchParamsProps) => {
-  const result = await getAllTags({ searchQuery: searchParams.q });
+  const result = await getAllTags({
+    searchQuery: searchParams.q,
+    filter: searchParams.filter,
+  });
 
   return (
     <>
@@ -26,7 +29,7 @@ const page = async ({ searchParams }: SearchParamsProps) => {
         <Filter
           containerClasses="flex"
           otherClasses="min-h-[56px] sm:min-w-[170px]"
-          filters={UserFilters}
+          filters={TagFilters}
         />
       </div>
       <section className="mt-12 flex flex-wrap gap-4">
