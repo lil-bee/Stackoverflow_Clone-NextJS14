@@ -1,16 +1,18 @@
 import React from "react";
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import Filter from "@/components/shared/Filter";
-import { TagFilters, UserFilters } from "@/constants/filter";
+import { TagFilters } from "@/constants/filter";
 import Link from "next/link";
 import { getAllTags } from "@/lib/actions/tag.action";
 import NoResult from "@/components/shared/NoResult";
 import { SearchParamsProps } from "@/types";
+import Pagination from "@/components/shared/Pagination";
 
 const page = async ({ searchParams }: SearchParamsProps) => {
   const result = await getAllTags({
     searchQuery: searchParams.q,
     filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
   });
 
   return (
@@ -65,6 +67,10 @@ const page = async ({ searchParams }: SearchParamsProps) => {
           />
         )}
       </section>
+      <Pagination
+        isNext={result.isNext}
+        pageNumber={searchParams?.page ? +searchParams.page : 1}
+      />
     </>
   );
 };

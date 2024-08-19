@@ -6,6 +6,7 @@ import QuestionCard from "@/components/shared/card/QuestionCard";
 import { auth } from "@clerk/nextjs";
 import { getSavedQuestions } from "@/lib/actions/user.action";
 import { SearchParamsProps } from "@/types";
+import Pagination from "@/components/shared/Pagination";
 
 export default async function Home({ searchParams }: SearchParamsProps) {
   const { userId } = auth();
@@ -60,6 +61,10 @@ export default async function Home({ searchParams }: SearchParamsProps) {
           />
         )}
       </div>
+      <Pagination
+        isNext={result.isNext}
+        pageNumber={searchParams?.page ? +searchParams.page : 1}
+      />
     </>
   );
 }

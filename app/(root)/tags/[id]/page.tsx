@@ -4,11 +4,13 @@ import QuestionCard from "@/components/shared/card/QuestionCard";
 import { getQuestionsByTagId } from "@/lib/actions/tag.action";
 import { IQuestion } from "@/database/question.model";
 import { URLProps } from "@/types";
+import Pagination from "@/components/shared/Pagination";
 
 export default async function Home({ params, searchParams }: URLProps) {
   const result = await getQuestionsByTagId({
     tagId: params.id,
     searchQuery: searchParams.q,
+    page: searchParams.page ? +searchParams.page : 1,
   });
 
   return (
@@ -48,6 +50,10 @@ export default async function Home({ params, searchParams }: URLProps) {
             linkTitle="Ask a Question"
           />
         )}
+        <Pagination
+          pageNumber={searchParams?.page ? +searchParams.page : 1}
+          isNext={result.isNext}
+        />
       </div>
     </>
   );

@@ -21,9 +21,11 @@ export async function getQuestions(params: GetQuestionsParams) {
   try {
     connectToDatabase();
 
-    const { searchQuery, filter } = params;
+    const { searchQuery, filter, page = 1, pageSize = 10 } = params;
 
     const query: FilterQuery<typeof Question> = {};
+
+    const skip = (page - 1) * pageSize; // skip the previous items as we get new items every time
 
     if (searchQuery) {
       query.$or = [
@@ -51,9 +53,15 @@ export async function getQuestions(params: GetQuestionsParams) {
     const questions = await Question.find(query)
       .populate({ path: "tags", model: Tag })
       .populate({ path: "author", model: User })
-      .sort(sortOption);
+      .sort(sortOption)
+      .skip(skip) // skip the previous items as we get new items every time
+      .limit(pageSize); // to get only the x elements at a time per page
 
-    return { questions };
+    const totalQuestion = await Question.countDocuments(query);
+
+    const isNext = totalQuestion > skip + questions.length;
+
+    return { questions, isNext };
   } catch (error) {
     console.log(error);
     throw error;

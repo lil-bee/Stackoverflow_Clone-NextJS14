@@ -34,9 +34,11 @@ export async function getAllTags(params: GetAllTagsParams) {
   try {
     connectToDatabase();
 
-    const { searchQuery, filter } = params;
+    const { searchQuery, filter, page = 1, pageSize = 3 } = params;
 
     const query: FilterQuery<typeof Tag> = {};
+
+    const skipAmount = (page - 1) * pageSize;
 
     if (searchQuery) {
       query.$or = [{ name: { $regex: new RegExp(searchQuery, "i") } }];
@@ -60,8 +62,14 @@ export async function getAllTags(params: GetAllTagsParams) {
       default:
         break;
     }
-    const tags = await Tag.find(query).sort(sortOption);
-    return { tags };
+    const tags = await Tag.find(query)
+      .sort(sortOption)
+      .skip(skipAmount)
+      .limit(pageSize);
+    const totalTags = await Tag.countDocuments(query);
+
+    const isNext = totalTags > skipAmount + tags.length;
+    return { tags, isNext };
   } catch (error) {
     console.log(error);
     throw error;
@@ -76,30 +84,36 @@ export async function getQuestionsByTagId(params: GetQuestionsByTagIdParams) {
 
     const tagFilter: FilterQuery<ITag> = { _id: tagId };
 
-    const tag = await Tag.findOne(tagFilter).populate({
-      path: "questions",
-      model: Question,
-      match: searchQuery
-        ? { title: { $regex: searchQuery, $options: "i" } }
-        : {},
-      options: {
-        sort: { createdAt: -1 },
-      },
-      populate: [
-        { path: "tags", model: Tag, select: "_id name" },
-        { path: "author", model: User, select: "_id clerkId name picture" },
-      ],
-    });
+    const skipAmount = (page - 1) * pageSize;
+
+    const tag = await Tag.findOne(tagFilter)
+      .populate({
+        path: "questions",
+        model: Question,
+        match: searchQuery
+          ? { title: { $regex: searchQuery, $options: "i" } }
+          : {},
+        options: {
+          sort: { createdAt: -1 },
+          skip: skipAmount,
+          limit: pageSize + 1,
+        },
+        populate: [
+          { path: "tags", model: Tag, select: "_id name" },
+          { path: "author", model: User, select: "_id clerkId name picture" },
+        ],
+      })
+      .skip(skipAmount)
+      .limit(pageSize);
 
     if (!tag) {
       throw new Error("Tag not found");
     }
 
-    console.log(tag);
-
+    const isNext = tag.questions.length > pageSize;
     const questions = tag.questions;
 
-    return { tagTitle: tag.name, questions };
+    return { tagTitle: tag.name, questions, isNext };
   } catch (error) {
     console.log(error);
     throw error;

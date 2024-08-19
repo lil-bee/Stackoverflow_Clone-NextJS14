@@ -7,6 +7,7 @@ import { getTimestamp } from "@/lib/utils";
 import ParseHTML from "./card/ParseHTML";
 import { AnswerFilters } from "@/constants/filter";
 import Votes from "./Votes";
+import Pagination from "./Pagination";
 
 interface Props {
   questionId: string;
@@ -26,6 +27,7 @@ const AllAnswers = async ({
   const result = await getAnswers({
     questionId,
     sortBy: filter,
+    page: page ? +page : 1,
   });
 
   return (
@@ -78,6 +80,7 @@ const AllAnswers = async ({
           </article>
         ))}
       </div>
+      <Pagination isNext={result.isNext} pageNumber={page ? +page : 1} />
     </div>
   );
 };
