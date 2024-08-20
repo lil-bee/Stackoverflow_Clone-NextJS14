@@ -47,7 +47,7 @@ const GlobalSearch = () => {
 
         router.push(newUrl, { scroll: false });
       } else {
-        if (query) {
+        if (query || !isOpen) {
           const newUrl = removeKeyFromUrl({
             params: searchParams.toString(),
             keysToRemove: ["global", "type"],
@@ -58,7 +58,7 @@ const GlobalSearch = () => {
     }, 300);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [search, router, pathname, searchParams, query]);
+  }, [search, router, pathname, searchParams, query, isOpen]);
 
   return (
     <div
