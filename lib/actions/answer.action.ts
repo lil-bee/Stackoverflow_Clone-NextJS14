@@ -22,11 +22,20 @@ export async function createAnswer(params: CreateAnswerParams) {
     const newAnswer = await Answer.create({ content, author, question });
 
     // Add the answer to the question's answers array
-    await Question.findByIdAndUpdate(question, {
+    const questionObj = await Question.findByIdAndUpdate(question, {
       $push: { answers: newAnswer._id },
     });
 
-    // TODO: Add interaction...
+    // Add interaction
+    await Interaction.create({
+      user: author,
+      action: "answer",
+      question,
+      answer: newAnswer._id,
+      tags: questionObj.tags,
+    });
+
+    await User.findByIdAndUpdate(author, { $inc: { reputation: 10 } });
 
     revalidatePath(path);
   } catch (error) {
@@ -107,11 +116,11 @@ export async function upvoteAnswer(params: AnswerVoteParams) {
 
     // Increment author's reputation
     await User.findByIdAndUpdate(userId, {
-      $inc: { reputation: hasupVoted ? -2 : 2 },
+      $inc: { reputation: hasupVoted ? -2 : hasdownVoted ? 4 : 2 },
     });
 
     await User.findByIdAndUpdate(answer.author, {
-      $inc: { reputation: hasupVoted ? -10 : 10 },
+      $inc: { reputation: hasupVoted ? -10 : hasdownVoted ? 12 : 10 },
     });
 
     revalidatePath(path);
@@ -150,11 +159,11 @@ export async function downvoteAnswer(params: AnswerVoteParams) {
 
     // Increment author's reputation
     await User.findByIdAndUpdate(userId, {
-      $inc: { reputation: hasdownVoted ? -2 : 2 },
+      $inc: { reputation: hasdownVoted ? 2 : hasupVoted ? 4 : -2 },
     });
 
     await User.findByIdAndUpdate(answer.author, {
-      $inc: { reputation: hasdownVoted ? -10 : 10 },
+      $inc: { reputation: hasdownVoted ? 2 : hasupVoted ? -12 : -10 },
     });
 
     revalidatePath(path);
@@ -185,6 +194,8 @@ export async function deleteAnswer(params: DeleteAnswerParams) {
 
     // delete interactions related to this answer
     await Interaction.deleteMany({ answer: answerId });
+
+    await User.findByIdAndUpdate(answer.author, { $inc: { reputation: -10 } });
 
     revalidatePath(path);
   } catch (error) {

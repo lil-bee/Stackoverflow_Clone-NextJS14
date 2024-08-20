@@ -96,11 +96,24 @@ export async function createQuestion(params: CreateQuestionParams) {
       tagDocuments.push(existingTag._id);
     }
 
+    // Create an interaction record for the user's ask_question action
+    await Interaction.create({
+      user: author,
+      action: "ask_question",
+      question: question._id,
+      tags: tagDocuments,
+    });
+
     await Question.findByIdAndUpdate(question._id, {
       $push: { tags: { $each: tagDocuments } },
     });
+
+    await User.findByIdAndUpdate(author, { $inc: { reputation: 5 } });
     revalidatePath(path);
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 }
 
 export async function getQuestionById(params: GetQuestionByIdParams) {
@@ -144,6 +157,17 @@ export async function upvoteQuestion(params: QuestionVoteParams) {
     const question = await Question.findByIdAndUpdate(questionId, updateQuery, {
       new: true,
     });
+
+    // Increment author's reputation by +1/-1 for upvoting/revoking an upvote to the question
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasupVoted ? -1 : hasdownVoted ? 2 : 1 },
+    });
+
+    // Increment author's reputation by +10/-10 for recieving an upvote/downvote to the question
+    await User.findByIdAndUpdate(question.author, {
+      $inc: { reputation: hasupVoted ? -10 : hasdownVoted ? 12 : 10 },
+    });
+
     if (!question) {
       throw new Error("question not found");
     }
@@ -175,6 +199,15 @@ export async function downvoteQuestion(params: QuestionVoteParams) {
     const question = await Question.findByIdAndUpdate(questionId, updateQuery, {
       new: true,
     });
+
+    await User.findByIdAndUpdate(userId, {
+      $inc: { reputation: hasdownVoted ? 1 : hasupVoted ? -2 : -1 },
+    });
+
+    await User.findByIdAndUpdate(question.author, {
+      $inc: { reputation: hasdownVoted ? 2 : hasupVoted ? -12 : -2 },
+    });
+
     if (!question) {
       throw new Error("question not found");
     }
@@ -229,6 +262,12 @@ export async function deleteQuestion(params: DeleteQuestionParams) {
       { saved: questionId },
       { $pull: { saved: questionId } }
     );
+
+    const questionObj = await Question.findById(questionId);
+
+    await User.findByIdAndUpdate(questionObj.author, {
+      $inc: { reputation: -5 },
+    });
 
     revalidatePath(path);
   } catch (error) {
