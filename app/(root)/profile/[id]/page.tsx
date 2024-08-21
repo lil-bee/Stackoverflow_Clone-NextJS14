@@ -11,11 +11,15 @@ import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import QuestionTab from "@/components/shared/QuestionTab";
 import AnswerTab from "@/components/shared/AnswerTab";
+import Loading from "./loading";
 
 const Page = async ({ params, searchParams }: URLProps) => {
   const { userId: clerkId } = auth();
 
   const userInfo = await getUserInfo({ userId: params.id });
+
+  const isLoading = true;
+  if (isLoading) return <Loading />;
 
   return (
     <>
