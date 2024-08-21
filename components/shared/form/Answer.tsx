@@ -28,6 +28,7 @@ interface Props {
 const Answer = ({ question, questionId, authorId }: Props) => {
   const editorRef = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmittingAI, setIsSubmittingAI] = useState(false);
   const { mode } = useTheme();
   const pathname = usePathname();
 
@@ -64,6 +65,38 @@ const Answer = ({ question, questionId, authorId }: Props) => {
       setIsSubmitting(false);
     }
   }
+
+  const formatBoldText = (text: string): string => {
+    return text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+  };
+
+  const generateAIAnswer = async () => {
+    if (!authorId) return;
+
+    setIsSubmittingAI(true);
+
+    try {
+      const response = await fetch("/api/gemini", {
+        method: "POST",
+        body: JSON.stringify({ question }),
+      });
+
+      const aiAnswer = await response.json();
+
+      const formattedAnswer = formatBoldText(
+        aiAnswer.reply.replace(/\n/g, "<br />")
+      );
+
+      if (editorRef.current) {
+        const editor = editorRef.current as any;
+        editor.setContent(formattedAnswer);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsSubmittingAI(false);
+    }
+  };
   return (
     <>
       <div>
@@ -71,15 +104,24 @@ const Answer = ({ question, questionId, authorId }: Props) => {
           <h4 className="paragraph-semibold text-dark400_light800">
             Write your answer here
           </h4>
-          <Button className="btn light-border-2 gap-1.5 rounded-md px-4 py-2.5 text-primary-500 shadow-none dark:text-primary-500">
-            <Image
-              src="/assets/icons/stars.svg"
-              alt="star"
-              width={12}
-              height={12}
-              className="object-contain"
-            />
-            Generate AI Answer
+          <Button
+            onClick={generateAIAnswer}
+            className="btn light-border-2 gap-1.5 rounded-md px-4 py-2.5 text-primary-500 shadow-none dark:text-primary-500"
+          >
+            {isSubmittingAI ? (
+              <>Generating...</>
+            ) : (
+              <>
+                <Image
+                  src="/assets/icons/stars.svg"
+                  alt="star"
+                  width={12}
+                  height={12}
+                  className="object-contain"
+                />
+                Generate AI Answer
+              </>
+            )}
           </Button>
         </div>
 
@@ -127,8 +169,7 @@ const Answer = ({ question, questionId, authorId }: Props) => {
                           "undo redo | " +
                           "codesample | bold italic forecolor | alignleft aligncenter |" +
                           "alignright alignjustify | bullist numlist",
-                        content_style:
-                          "body { font-family:Inter; font-size:16px }",
+                        content_style: `body {  font-family: "Inter", sans-serif; font-size:16px }`,
                         skin: mode === "dark" ? "oxide-dark" : "oxide",
                         content_css: mode === "dark" ? "dark" : "light",
                       }}
