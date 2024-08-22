@@ -25,6 +25,7 @@ import Image from "next/image";
 import { createQuestion, editQuestion } from "@/lib/actions/question.action";
 import { useRouter, usePathname } from "next/navigation";
 import { useTheme } from "@/context/ThemeProvider";
+import { toast } from "@/components/ui/use-toast";
 
 interface Props {
   mongoUserId: string;
@@ -67,6 +68,10 @@ export function Question({ mongoUserId, questionDetail, type }: Props) {
           path: pathname,
         });
 
+        toast({
+          title: "Edit Question Successful",
+        });
+
         router.push(`/question/${parsedQuestionDetail._id}`);
       } else {
         await createQuestion({
@@ -77,10 +82,18 @@ export function Question({ mongoUserId, questionDetail, type }: Props) {
           path: pathname,
         });
 
+        toast({
+          title: "Ask Question Successful",
+        });
+
         router.push("/");
       }
     } catch (error) {
       console.log(error);
+      toast({
+        title: `Error: ${error}`,
+        variant: "destructive",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -191,7 +204,8 @@ export function Question({ mongoUserId, questionDetail, type }: Props) {
                       "undo redo | " +
                       "codesample | bold italic forecolor | alignleft aligncenter |" +
                       "alignright alignjustify | bullist numlist",
-                    content_style: "body { font-family:Inter; font-size:16px }",
+                    content_style:
+                      "body { font-family:Noto, sans-serif; font-size:16px }",
                     skin: mode === "dark" ? "oxide-dark" : "oxide",
                     content_css: mode === "dark" ? "dark" : "light",
                   }}

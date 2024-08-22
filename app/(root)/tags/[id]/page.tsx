@@ -5,7 +5,6 @@ import { getQuestionsByTagId } from "@/lib/actions/tag.action";
 import { IQuestion } from "@/database/question.model";
 import { URLProps } from "@/types";
 import Pagination from "@/components/shared/Pagination";
-import Loading from "./loading";
 
 export default async function Home({ params, searchParams }: URLProps) {
   const result = await getQuestionsByTagId({
@@ -13,9 +12,6 @@ export default async function Home({ params, searchParams }: URLProps) {
     searchQuery: searchParams.q,
     page: searchParams.page ? +searchParams.page : 1,
   });
-
-  const isLoading = true;
-  if (isLoading) return <Loading />;
 
   return (
     <>

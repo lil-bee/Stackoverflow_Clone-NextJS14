@@ -6,6 +6,7 @@ import "../styles/prism.css";
 import type { Metadata } from "next";
 import React from "react";
 import { ThemeProvider } from "@/context/ThemeProvider";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -44,6 +45,7 @@ export default function RootLayout({
       <html lang="en">
         <body className={`${inter.variable} ${spaceGrotesk.variable}`}>
           <ThemeProvider>{children}</ThemeProvider>
+          <Toaster />
         </body>
       </html>
     </ClerkProvider>

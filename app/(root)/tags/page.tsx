@@ -7,7 +7,6 @@ import { getAllTags } from "@/lib/actions/tag.action";
 import NoResult from "@/components/shared/NoResult";
 import { SearchParamsProps } from "@/types";
 import Pagination from "@/components/shared/Pagination";
-import Loading from "./loading";
 
 const page = async ({ searchParams }: SearchParamsProps) => {
   const result = await getAllTags({
@@ -16,8 +15,6 @@ const page = async ({ searchParams }: SearchParamsProps) => {
     page: searchParams.page ? +searchParams.page : 1,
   });
 
-  const isLoading = true;
-  if (isLoading) return <Loading />;
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
