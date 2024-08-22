@@ -11,6 +11,27 @@ import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import QuestionTab from "@/components/shared/QuestionTab";
 import AnswerTab from "@/components/shared/AnswerTab";
+import { Metadata, ResolvingMetadata } from "next";
+
+type Props = {
+  params: { id: string };
+};
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const { userId } = auth();
+
+  const userInfo = await getUserInfo({ userId: params.id });
+  const userName = userInfo.user.name;
+
+  return {
+    title: `${userName} Profile`,
+    description: `Explore your own or other users' profiles on DevFlow. View contributions, including questions, answers, and earned badges.
+    Edit your profile to highlight your expertise, or browse through others' achievements and activities in the community.`,
+  };
+}
 
 const Page = async ({ params, searchParams }: URLProps) => {
   const { userId: clerkId } = auth();
