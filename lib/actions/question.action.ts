@@ -9,6 +9,7 @@ import {
   GetQuestionByIdParams,
   GetQuestionsParams,
   QuestionVoteParams,
+  RecommendedParams,
 } from "./shared.types";
 import Tag from "@/database/tag.model";
 import User from "@/database/user.model";
@@ -96,16 +97,16 @@ export async function createQuestion(params: CreateQuestionParams) {
       tagDocuments.push(existingTag._id);
     }
 
+    await Question.findByIdAndUpdate(question._id, {
+      $push: { tags: { $each: tagDocuments } },
+    });
+
     // Create an interaction record for the user's ask_question action
     await Interaction.create({
       user: author,
       action: "ask_question",
       question: question._id,
       tags: tagDocuments,
-    });
-
-    await Question.findByIdAndUpdate(question._id, {
-      $push: { tags: { $each: tagDocuments } },
     });
 
     await User.findByIdAndUpdate(author, { $inc: { reputation: 5 } });
@@ -178,6 +179,7 @@ export async function upvoteQuestion(params: QuestionVoteParams) {
     throw error;
   }
 }
+
 export async function downvoteQuestion(params: QuestionVoteParams) {
   try {
     connectToDatabase();
@@ -288,6 +290,70 @@ export async function getHotQuestion() {
       .limit(5);
 
     return { hotQuestions };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
+export async function getRecommendQuestion(params: RecommendedParams) {
+  try {
+    connectToDatabase();
+
+    const { userId, page = 1, pageSize = 10, searchQuery } = params;
+
+    const user = await User.findOne({ clerkId: userId });
+    if (!user) {
+      throw new Error("user not found");
+    }
+
+    // get user interaction
+    const userInteractions = await Interaction.find({ user: user._id })
+      .populate("tags")
+      .exec();
+
+    console.log(userInteractions);
+
+    // get just the tag from user interaction
+    const userTags = userInteractions.reduce((tags, interaction) => {
+      if (interaction.tags) {
+        tags = tags.concat(interaction.tags);
+      }
+      return tags;
+    }, []);
+
+    console.log(userTags);
+
+    // just the unique id of the tag
+    const TagsId = [
+      // @ts-ignore
+      ...new Set(userTags.map((tag: any) => tag._id)),
+    ];
+
+    const query: FilterQuery<typeof Question> = {
+      $and: [{ tags: { $in: TagsId } }, { author: { $ne: user._id } }],
+    };
+
+    if (searchQuery) {
+      query.$or = [
+        { title: { $regex: new RegExp(searchQuery, "i") } },
+        { content: { $regex: new RegExp(searchQuery, "i") } },
+      ];
+    }
+
+    const skip = (page - 1) * pageSize; // skip the previous items as we get new items every time
+
+    const recommendedQuestions = await Question.find(query)
+      .populate({ path: "tags", model: Tag })
+      .populate({ path: "author", model: User })
+      .skip(skip)
+      .limit(pageSize);
+
+    const totalQuestions = await Question.countDocuments(query);
+
+    const isNext = totalQuestions > skip + recommendedQuestions.length;
+
+    return { questions: recommendedQuestions, isNext };
   } catch (error) {
     console.log(error);
     throw error;
