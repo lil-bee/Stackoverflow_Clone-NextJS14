@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     siteName: "Devflow by lilbee",
     images: [
       {
-        url: "/assets/images/auth-dark", // Must be an absolute URL
+        url: "https://stackoverflow-clone-next-js-14.vercel.app/assets/images/auth-dark", // Must be an absolute URL
         width: 800,
         height: 600,
       },
