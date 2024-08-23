@@ -2,7 +2,8 @@
 import React from "react";
 import { Button } from "../ui/button";
 import { formUrlQuery } from "@/lib/utils";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useTransitionRouter } from "next-view-transitions";
 
 interface Props {
   pageNumber: number;
@@ -10,7 +11,7 @@ interface Props {
 }
 
 const Pagination = ({ pageNumber, isNext }: Props) => {
-  const router = useRouter();
+  const router = useTransitionRouter();
   const searchParam = useSearchParams();
 
   const handleNavigation = (type: string) => {

@@ -9,7 +9,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { formUrlQuery } from "@/lib/utils";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useTransitionRouter } from "next-view-transitions";
 
 interface Props {
   filters: {
@@ -21,7 +22,7 @@ interface Props {
 }
 
 const Filter = ({ filters, otherClasses, containerClasses }: Props) => {
-  const router = useRouter();
+  const router = useTransitionRouter();
   const searchParam = useSearchParams();
 
   const defaultParam = searchParam.get("filter");

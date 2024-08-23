@@ -3,11 +3,12 @@
 import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { HomePageFilters } from "@/constants/filter";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { formUrlQuery } from "@/lib/utils";
+import { useTransitionRouter } from "next-view-transitions";
 
 const HomeFilters = () => {
-  const router = useRouter();
+  const router = useTransitionRouter();
   const searchParam = useSearchParams();
   const [active, setActive] = useState(searchParam.get("filter") || "");
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
+import { Link } from "next-view-transitions";
 
 interface Props {
   _id: string;

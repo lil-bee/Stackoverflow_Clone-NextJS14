@@ -2,10 +2,11 @@
 
 import { sidebarLinks } from "@/constants";
 import Image from "next/image";
-import Link from "next/link";
+// import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "../ui/button";
 import { SignedOut, useAuth } from "@clerk/nextjs";
+import { Link } from "next-view-transitions";
 
 const LeftSidebar = () => {
   const { userId } = useAuth();
