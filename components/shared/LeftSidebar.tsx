@@ -37,7 +37,7 @@ const LeftSidebar = () => {
                 isActive
                   ? "primary-gradient rounded-lg text-light-900"
                   : "text-dark300_light900"
-              }  flex items-center justify-start gap-4 bg-transparent p-4`}
+              }  flex items-center justify-start gap-4 bg-transparent p-4 `}
             >
               <Image
                 src={item.imgURL}
@@ -47,7 +47,7 @@ const LeftSidebar = () => {
                 className={`${isActive ? "" : "invert-colors"}`}
               />
               <p
-                className={`${isActive ? "base-bold" : "base-medium"} max-lg:hidden`}
+                className={`${isActive ? "base-bold" : "base-medium"} hover:text-primary-500 max-lg:hidden`}
               >
                 {item.label}
               </p>
