@@ -29,7 +29,6 @@ interface Props {
 }
 
 const Stats = ({ totalAnswers, totalQuestions, badge, reputation }: Props) => {
-  console.log({ badge });
   return (
     <div className="mt-4">
       <h4 className="h3-semibold text-dark200_light900">

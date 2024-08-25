@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "next-view-transitions";
 import RenderTag from "./RenderTag";
 import { getHotQuestion } from "@/lib/actions/question.action";
 import { getHotTags } from "@/lib/actions/tag.action";

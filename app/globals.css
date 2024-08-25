@@ -22,11 +22,11 @@ body {
   }
 
   .card-wrapper {
-    @apply bg-light-900 dark:dark-gradient shadow-light-100 dark:shadow-dark-100;
+    @apply bg-light-900 dark:dark-gradient shadow-light-100 dark:shadow-dark-100 transition-all duration-300 hover:-translate-y-2;
   }
 
   .btn {
-    @apply bg-light-800 dark:bg-dark-300 !important;
+    @apply bg-light-800 dark:bg-dark-300 hover:bg-opacity-90 !important;
   }
 
   .btn-secondary {

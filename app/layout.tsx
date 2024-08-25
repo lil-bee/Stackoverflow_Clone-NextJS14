@@ -7,6 +7,7 @@ import type { Metadata } from "next";
 import React from "react";
 import { ThemeProvider } from "@/context/ThemeProvider";
 import { Toaster } from "@/components/ui/toaster";
+import { ViewTransitions } from "next-view-transitions";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -40,7 +41,7 @@ export const metadata: Metadata = {
     siteName: "Devflow by lilbee",
     images: [
       {
-        url: "/assets/images/auth-dark", // Must be an absolute URL
+        url: "https://stackoverflow-clone-next-js-14.vercel.app/assets/images/auth-dark", // Must be an absolute URL
         width: 800,
         height: 600,
       },
@@ -55,20 +56,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ClerkProvider
-      appearance={{
-        elements: {
-          formButtonPrimary: "primary-gradient",
-          footerActionLink: "primary-text-gradient hover:text-primary-500",
-        },
-      }}
-    >
-      <html lang="en">
-        <body className={`${inter.variable} ${spaceGrotesk.variable}`}>
-          <ThemeProvider>{children}</ThemeProvider>
-          <Toaster />
-        </body>
-      </html>
-    </ClerkProvider>
+    <ViewTransitions>
+      <ClerkProvider
+        appearance={{
+          elements: {
+            formButtonPrimary: "primary-gradient",
+            footerActionLink: "primary-text-gradient hover:text-primary-500",
+          },
+        }}
+      >
+        <html lang="en">
+          <body className={`${inter.variable} ${spaceGrotesk.variable}`}>
+            <ThemeProvider>{children}</ThemeProvider>
+            <Toaster />
+          </body>
+        </html>
+      </ClerkProvider>
+    </ViewTransitions>
   );
 }
