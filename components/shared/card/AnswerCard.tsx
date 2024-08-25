@@ -11,7 +11,7 @@ interface AnswerProps {
   upvotes: string[];
   createdAt: Date;
   question: { _id: string; title: string };
-  clerkId?: string;
+  clerkId?: string | null;
 }
 
 const AnswerCard = ({

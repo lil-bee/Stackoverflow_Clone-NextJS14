@@ -1,9 +1,6 @@
 import LocalSearchBar from "@/components/shared/search/LocalSearchBar";
 import NoResult from "@/components/shared/NoResult";
-import { auth } from "@clerk/nextjs";
-import { getSavedQuestions } from "@/lib/actions/user.action";
 import { SearchParamsProps } from "@/types";
-import Pagination from "@/components/shared/Pagination";
 import { Metadata } from "next";
 import { getCountryList, getJob } from "@/lib/actions/job.action";
 import JobCard from "@/components/shared/card/JobCard";
@@ -14,16 +11,6 @@ export const metadata: Metadata = {
 };
 
 export default async function Home({ searchParams }: SearchParamsProps) {
-  const { userId } = auth();
-
-  if (!userId) return null;
-
-  const result = await getSavedQuestions({
-    clerkId: userId,
-    searchQuery: searchParams.q,
-    filter: searchParams.filter,
-  });
-
   const countryFilters = await getCountryList();
   const arrCountry = [
     // @ts-ignore
@@ -83,10 +70,6 @@ export default async function Home({ searchParams }: SearchParamsProps) {
           />
         )}
       </div>
-      <Pagination
-        isNext={result.isNext}
-        pageNumber={searchParams?.page ? +searchParams.page : 1}
-      />
     </>
   );
 }
