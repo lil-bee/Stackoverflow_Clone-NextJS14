@@ -7,7 +7,11 @@ import UserCard from "@/components/shared/card/UserCard";
 import Link from "next/link";
 import { SearchParamsProps } from "@/types";
 import Pagination from "@/components/shared/Pagination";
-import Loading from "./loading";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Community",
+};
 
 const page = async ({ searchParams }: SearchParamsProps) => {
   const result = await getAllUser({
@@ -15,9 +19,6 @@ const page = async ({ searchParams }: SearchParamsProps) => {
     filter: searchParams.filter,
     page: searchParams.page ? +searchParams.page : 1,
   });
-
-  const isLoading = true;
-  if (isLoading) return <Loading />;
 
   return (
     <>

@@ -5,7 +5,30 @@ import { getQuestionsByTagId } from "@/lib/actions/tag.action";
 import { IQuestion } from "@/database/question.model";
 import { URLProps } from "@/types";
 import Pagination from "@/components/shared/Pagination";
-import Loading from "./loading";
+import { Metadata, ResolvingMetadata } from "next";
+
+type Props = {
+  params: { id: string };
+};
+
+function capitalizeFirstLetter(string: string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const result = await getQuestionsByTagId({
+    tagId: params.id,
+  });
+
+  const tagName = capitalizeFirstLetter(result.tagTitle);
+
+  return {
+    title: `${tagName} Tag`,
+  };
+}
 
 export default async function Home({ params, searchParams }: URLProps) {
   const result = await getQuestionsByTagId({
@@ -14,13 +37,12 @@ export default async function Home({ params, searchParams }: URLProps) {
     page: searchParams.page ? +searchParams.page : 1,
   });
 
-  const isLoading = true;
-  if (isLoading) return <Loading />;
-
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
-        <h1 className="h1-bold text-dark100_light900">{result.tagTitle}</h1>
+        <h1 className="h1-bold text-dark100_light900">
+          {capitalizeFirstLetter(result.tagTitle)}
+        </h1>
       </div>
       <div className="mt-11 flex justify-between gap-5 max-sm:flex-col sm:items-center">
         <LocalSearchBar

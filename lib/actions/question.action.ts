@@ -247,6 +247,15 @@ export async function deleteQuestion(params: DeleteQuestionParams) {
 
     const { questionId, path } = params;
 
+    // Reputation Logic
+    const question = await Question.findById(questionId);
+
+    if (!question) throw new Error("Question Not Found");
+
+    await User.findByIdAndUpdate(question.author, {
+      $inc: { reputation: -5 },
+    });
+
     // delete 1 question,
     await Question.deleteOne({ _id: questionId });
     // delete byk answer di question itu,
@@ -262,12 +271,6 @@ export async function deleteQuestion(params: DeleteQuestionParams) {
       { saved: questionId },
       { $pull: { saved: questionId } }
     );
-
-    const questionObj = await Question.findById(questionId);
-
-    await User.findByIdAndUpdate(questionObj.author, {
-      $inc: { reputation: -5 },
-    });
 
     revalidatePath(path);
   } catch (error) {

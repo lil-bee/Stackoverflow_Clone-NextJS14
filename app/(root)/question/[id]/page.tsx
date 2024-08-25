@@ -11,8 +11,14 @@ import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import { Metadata } from "next";
+import { URLProps } from "@/types";
 
-const page = async ({ params, searchParams }) => {
+export const metadata: Metadata = {
+  title: "Question",
+};
+
+const page = async ({ params, searchParams }: URLProps) => {
   const { userId: clerkId } = auth();
   let mongoUser;
   if (clerkId) {

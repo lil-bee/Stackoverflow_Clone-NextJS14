@@ -7,6 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
+import { ToastAction } from "@radix-ui/react-toast";
 
 interface Props {
   type: string;
@@ -34,6 +35,9 @@ const EditDeleteAction = ({ type, itemId }: Props) => {
         path: pathname,
       });
     }
+    toast({
+      title: `Success Delete ${type === "question" ? "Question" : "Answer"}`,
+    });
   };
   return (
     <div className="flex items-center justify-end gap-3 max-sm:w-full">
@@ -55,9 +59,20 @@ const EditDeleteAction = ({ type, itemId }: Props) => {
         height={14}
         className="cursor-pointer object-contain"
         onClick={() => {
-          handleDelete();
           toast({
-            title: `Success Delete ${type === "question" ? "Question" : "Answer"}`,
+            title: "Are you absolutely sure?",
+            description:
+              "This action cannot be undone. This will permanently delete and remove your data from our servers.",
+            action: (
+              <ToastAction
+                className="btn-secondary rounded-md px-3 py-1"
+                onClick={() => handleDelete()}
+                altText="Try again"
+              >
+                Sure
+              </ToastAction>
+            ),
+            variant: "destructive",
           });
         }}
       />

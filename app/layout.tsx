@@ -6,6 +6,7 @@ import "../styles/prism.css";
 import type { Metadata } from "next";
 import React from "react";
 import { ThemeProvider } from "@/context/ThemeProvider";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -19,11 +20,32 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "DevFlow | lilbee",
+  title: {
+    template: "%s | DevFlow by lilbee",
+    default: "DevFlow by lilbee",
+  },
   description:
     "A community-driven platform for asking and answering programming questions. Get help, share knowledge, and collaborate with developers from around the world. Explore topics in web development, mobile app development, algorithms, data structures, and more.",
   icons: {
     icon: "/assets/images/site-logo.svg",
+  },
+  openGraph: {
+    title: {
+      template: "%s | DevFlow by lilbee",
+      default: "DevFlow by lilbee",
+    },
+    description:
+      "A community-driven platform for asking and answering programming questions. Get help, share knowledge, and collaborate with developers from around the world. Explore topics in web development, mobile app development, algorithms, data structures, and more.",
+    url: "https://stackoverflow-clone-next-js-14.vercel.app",
+    siteName: "Devflow by lilbee",
+    images: [
+      {
+        url: "/assets/images/auth-dark", // Must be an absolute URL
+        width: 800,
+        height: 600,
+      },
+    ],
+    type: "website",
   },
 };
 
@@ -44,6 +66,7 @@ export default function RootLayout({
       <html lang="en">
         <body className={`${inter.variable} ${spaceGrotesk.variable}`}>
           <ThemeProvider>{children}</ThemeProvider>
+          <Toaster />
         </body>
       </html>
     </ClerkProvider>

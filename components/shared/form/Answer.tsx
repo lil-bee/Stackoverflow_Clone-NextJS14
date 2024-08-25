@@ -18,6 +18,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useTheme } from "@/context/ThemeProvider";
 import { createAnswer } from "@/lib/actions/answer.action";
+import { toast } from "@/components/ui/use-toast";
 
 interface Props {
   question: string;
@@ -59,6 +60,9 @@ const Answer = ({ question, questionId, authorId }: Props) => {
 
         editor.setContent("");
       }
+      return toast({
+        title: "Submit Answer Successful",
+      });
     } catch (error) {
       console.log(error);
     } finally {
@@ -91,8 +95,14 @@ const Answer = ({ question, questionId, authorId }: Props) => {
         const editor = editorRef.current as any;
         editor.setContent(formattedAnswer);
       }
+      return toast({
+        title: "Success Generate Answer",
+      });
     } catch (error) {
       console.log(error);
+      return toast({
+        title: `Error : ${error}`,
+      });
     } finally {
       setIsSubmittingAI(false);
     }

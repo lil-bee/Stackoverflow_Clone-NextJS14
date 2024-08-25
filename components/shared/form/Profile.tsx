@@ -19,6 +19,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { updateUser } from "@/lib/actions/user.action";
 import { usePathname, useRouter } from "next/navigation";
+import { toast } from "@/components/ui/use-toast";
 
 interface Props {
   clerkId: string;
@@ -60,6 +61,9 @@ const Profile = ({ clerkId, user }: Props) => {
         path: pathname,
       });
 
+      toast({
+        title: "Update Profile Successful",
+      });
       router.back();
     } catch (error) {
       console.log(error);
