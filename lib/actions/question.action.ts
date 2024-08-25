@@ -312,8 +312,6 @@ export async function getRecommendQuestion(params: RecommendedParams) {
       .populate("tags")
       .exec();
 
-    console.log(userInteractions);
-
     // get just the tag from user interaction
     const userTags = userInteractions.reduce((tags, interaction) => {
       if (interaction.tags) {
@@ -321,8 +319,6 @@ export async function getRecommendQuestion(params: RecommendedParams) {
       }
       return tags;
     }, []);
-
-    console.log(userTags);
 
     // just the unique id of the tag
     const TagsId = [
