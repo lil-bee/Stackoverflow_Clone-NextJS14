@@ -9,6 +9,7 @@ import QuestionCard from "@/components/shared/card/QuestionCard";
 import { getQuestions } from "@/lib/actions/question.action";
 import { SearchParamsProps } from "@/types";
 import Pagination from "@/components/shared/Pagination";
+import Loading from "./loading";
 
 export default async function Home({ searchParams }: SearchParamsProps) {
   const result = await getQuestions({
@@ -17,6 +18,9 @@ export default async function Home({ searchParams }: SearchParamsProps) {
     page: searchParams.page ? +searchParams.page : 1,
   });
 
+  const isLoading = true;
+
+  if (isLoading) return <Loading />;
   return (
     <>
       <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
@@ -42,7 +46,7 @@ export default async function Home({ searchParams }: SearchParamsProps) {
         />
       </div>
       <HomeFilters />
-      <div className="mt-10 flex w-full flex-col gap-6 ">
+      <div className="mt-10 flex w-full flex-col gap-6">
         {result.questions.length > 0 ? (
           result.questions.map((question) => (
             <QuestionCard
