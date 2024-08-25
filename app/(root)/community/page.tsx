@@ -6,11 +6,13 @@ import { getAllUser } from "@/lib/actions/user.action";
 import UserCard from "@/components/shared/card/UserCard";
 import Link from "next/link";
 import { SearchParamsProps } from "@/types";
+import Pagination from "@/components/shared/Pagination";
 
 const page = async ({ searchParams }: SearchParamsProps) => {
   const result = await getAllUser({
     searchQuery: searchParams.q,
     filter: searchParams.filter,
+    page: searchParams.page ? +searchParams.page : 1,
   });
 
   return (
@@ -44,6 +46,10 @@ const page = async ({ searchParams }: SearchParamsProps) => {
           </div>
         )}
       </section>
+      <Pagination
+        isNext={result.isNext}
+        pageNumber={searchParams?.page ? +searchParams.page : 1}
+      />
     </>
   );
 };
