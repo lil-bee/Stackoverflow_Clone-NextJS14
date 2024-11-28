@@ -31,8 +31,6 @@ export async function POST(request: Request) {
       },
     });
 
-    console.log("API Response:", result); // Logging response
-
     const reply = result.response.text();
 
     return NextResponse.json({ reply });
